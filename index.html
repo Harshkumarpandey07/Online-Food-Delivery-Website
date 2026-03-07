@@ -3,67 +3,848 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FreshBite - Online Food Delivery</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>FreshBite – Food Delivered Fresh</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0e0c;
+      --surface: #1a1814;
+      --card: #231f1a;
+      --accent: #f4a035;
+      --accent2: #e8572a;
+      --text: #f0ebe3;
+      --muted: #8a8070;
+      --border: #2e2920;
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 5%;
+      background: rgba(15,14,12,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: padding .3s;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: -1px;
+    }
+    .logo span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: .92rem; font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .cart-btn {
+      position: relative; background: var(--accent);
+      border: none; border-radius: 50px; padding: 10px 22px;
+      color: #0f0e0c; font-weight: 600; font-size: .9rem;
+      cursor: pointer; transition: transform .2s, background .2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cart-btn:hover { background: #ffb347; transform: translateY(-1px); }
+    .cart-count {
+      background: var(--accent2); color: #fff;
+      border-radius: 50%; width: 20px; height: 20px;
+      font-size: .72rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .3s;
+    }
+    .cart-count.bump { transform: scale(1.5); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 110px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 70% 50%, rgba(244,160,53,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 30% 80%, rgba(232,87,42,0.08) 0%, transparent 60%);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 560px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(244,160,53,0.12); border: 1px solid rgba(244,160,53,0.3);
+      border-radius: 50px; padding: 7px 16px; margin-bottom: 28px;
+      font-size: .82rem; color: var(--accent); font-weight: 500;
+    }
+    .hero-badge .dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05; font-weight: 900;
+      margin-bottom: 20px;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 36px; max-width: 420px; }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #0f0e0c;
+      border: none; border-radius: 50px; padding: 15px 32px;
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 8px 24px rgba(244,160,53,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(244,160,53,0.45); }
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border); border-radius: 50px; padding: 15px 32px;
+      font-weight: 500; font-size: 1rem; cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-secondary:hover { background: var(--surface); border-color: var(--muted); }
+    .hero-stats {
+      display: flex; gap: 40px; margin-top: 52px;
+      padding-top: 32px; border-top: 1px solid var(--border);
+    }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+
+    /* floating food cards */
+    .hero-visual {
+      position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      z-index: 1;
+    }
+    .float-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      font-size: 2.4rem; text-align: center; width: 130px;
+      animation: float 4s ease-in-out infinite;
+    }
+    .float-card:nth-child(2) { animation-delay: .6s; margin-top: 30px; }
+    .float-card:nth-child(3) { animation-delay: 1.2s; }
+    .float-card:nth-child(4) { animation-delay: 1.8s; margin-top: 30px; }
+    .float-card span { font-size: .78rem; color: var(--muted); }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── CATEGORIES ── */
+    .categories {
+      padding: 80px 5%;
+      background: var(--surface);
+    }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-label {
+      font-size: .8rem; text-transform: uppercase; letter-spacing: 3px;
+      color: var(--accent); font-weight: 600; margin-bottom: 12px;
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700;
+      line-height: 1.2;
+    }
+    .cat-grid { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cat-pill {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50px; padding: 12px 24px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; transition: all .2s; font-size: .92rem;
+    }
+    .cat-pill:hover, .cat-pill.active {
+      background: var(--accent); color: #0f0e0c;
+      border-color: var(--accent); font-weight: 600;
+      transform: translateY(-2px);
+    }
+    .cat-pill span:first-child { font-size: 1.3rem; }
+
+    /* ── MENU ── */
+    .menu { padding: 80px 5%; }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .food-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: transform .25s, border-color .25s;
+      cursor: pointer;
+    }
+    .food-card:hover { transform: translateY(-6px); border-color: rgba(244,160,53,0.3); }
+    .food-img {
+      width: 100%; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; background: var(--surface);
+      position: relative;
+    }
+    .food-tag {
+      position: absolute; top: 12px; left: 12px;
+      background: var(--accent); color: #0f0e0c;
+      font-size: .72rem; font-weight: 700; padding: 4px 10px;
+      border-radius: 50px;
+    }
+    .food-tag.veg { background: #4caf50; color: #fff; }
+    .food-tag.spicy { background: var(--accent2); color: #fff; }
+    .food-body { padding: 20px; }
+    .food-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; }
+    .food-desc { color: var(--muted); font-size: .85rem; line-height: 1.6; margin-bottom: 16px; }
+    .food-footer { display: flex; align-items: center; justify-content: space-between; }
+    .food-price { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+    .food-price small { font-family: 'DM Sans', sans-serif; font-size: .7rem; color: var(--muted); font-weight: 400; }
+    .add-btn {
+      background: var(--accent); border: none; border-radius: 50px;
+      width: 38px; height: 38px; font-size: 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .2s, background .2s; color: #0f0e0c;
+    }
+    .add-btn:hover { background: #ffb347; transform: scale(1.1); }
+    .food-rating { display: flex; align-items: center; gap: 5px; font-size: .82rem; color: var(--muted); margin-bottom: 14px; }
+    .stars { color: var(--accent); }
+
+    /* ── CART SIDEBAR ── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .cart-sidebar {
+      position: fixed; right: 0; top: 0; bottom: 0; width: min(420px, 100vw);
+      background: var(--surface); border-left: 1px solid var(--border);
+      z-index: 201; transform: translateX(100%); transition: transform .3s ease;
+      display: flex; flex-direction: column;
+    }
+    .cart-sidebar.open { transform: translateX(0); }
+    .cart-header {
+      padding: 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-header h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+    .close-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+      color: var(--text); font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+    }
+    .cart-items { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .cart-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .cart-item-emoji { font-size: 2rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: var(--surface); border-radius: 10px; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: .92rem; }
+    .cart-item-price { color: var(--accent); font-size: .88rem; margin-top: 3px; }
+    .qty-controls { display: flex; align-items: center; gap: 10px; }
+    .qty-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; width: 28px; height: 28px; cursor: pointer;
+      color: var(--text); font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .qty-btn:hover { background: var(--accent); color: #0f0e0c; border-color: var(--accent); }
+    .qty { font-weight: 600; min-width: 20px; text-align: center; }
+    .cart-footer { padding: 20px; border-top: 1px solid var(--border); }
+    .cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .cart-total span:first-child { color: var(--muted); }
+    .cart-total strong { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--accent); }
+    .checkout-btn {
+      width: 100%; background: var(--accent); color: #0f0e0c;
+      border: none; border-radius: 50px; padding: 16px;
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+    .checkout-btn:hover { background: #ffb347; transform: translateY(-1px); }
+    .empty-cart { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-cart .empty-icon { font-size: 3.5rem; margin-bottom: 14px; }
+
+    /* ── SPECIAL OFFERS ── */
+    .offers { padding: 80px 5%; background: var(--surface); }
+    .offers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 48px; }
+    .offer-card {
+      border-radius: var(--radius); padding: 32px;
+      display: flex; flex-direction: column; gap: 14px;
+      position: relative; overflow: hidden;
+    }
+    .offer-card.orange { background: linear-gradient(135deg, #f4a035 0%, #e8572a 100%); color: #0f0e0c; }
+    .offer-card.dark { background: var(--card); border: 1px solid var(--border); }
+    .offer-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+    .offer-card p { font-size: .9rem; opacity: .8; }
+    .offer-code {
+      background: rgba(0,0,0,0.15); border-radius: 8px; padding: 8px 16px;
+      font-weight: 700; letter-spacing: 2px; display: inline-block;
+      font-size: .88rem; width: fit-content;
+    }
+    .offer-card.dark .offer-code { background: var(--surface); color: var(--accent); }
+    .offer-emoji { font-size: 4rem; position: absolute; right: 24px; bottom: 24px; opacity: .3; }
+
+    /* ── HOW IT WORKS ── */
+    .how { padding: 80px 5%; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 48px; }
+    .step { text-align: center; padding: 32px 20px; }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(244,160,53,0.1); border: 1px solid rgba(244,160,53,0.3);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+      font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--accent);
+    }
+    .step-icon { font-size: 2.4rem; margin-bottom: 16px; }
+    .step h4 { font-weight: 700; margin-bottom: 10px; }
+    .step p { color: var(--muted); font-size: .88rem; line-height: 1.6; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding: 80px 5%; background: var(--surface); }
+    .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 48px; }
+    .review-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .reviewer { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; color: #0f0e0c;
+    }
+    .reviewer-info strong { font-size: .92rem; }
+    .reviewer-info small { color: var(--muted); font-size: .78rem; display: block; }
+    .review-text { color: var(--muted); font-size: .88rem; line-height: 1.7; }
+
+    /* ── NEWSLETTER ── */
+    .newsletter {
+      padding: 80px 5%; text-align: center;
+      background: linear-gradient(135deg, rgba(244,160,53,0.08) 0%, rgba(232,87,42,0.05) 100%);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .newsletter h2 { margin-bottom: 12px; }
+    .newsletter p { color: var(--muted); margin-bottom: 32px; }
+    .email-form { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; max-width: 480px; margin: 0 auto; }
+    .email-input {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-radius: 50px; padding: 14px 22px; color: var(--text);
+      font-size: .92rem; outline: none; min-width: 220px;
+      transition: border-color .2s;
+    }
+    .email-input:focus { border-color: var(--accent); }
+    .email-input::placeholder { color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 60px 5% 30px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand p { color: var(--muted); font-size: .88rem; line-height: 1.7; margin-top: 14px; max-width: 280px; }
+    .footer-col h4 { font-weight: 700; margin-bottom: 18px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { color: var(--muted); text-decoration: none; font-size: .88rem; transition: color .2s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 28px; border-top: 1px solid var(--border); color: var(--muted); font-size: .82rem; }
+    .social-links { display: flex; gap: 12px; }
+    .social-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; transition: background .2s, border-color .2s;
+      text-decoration: none; color: var(--text);
+    }
+    .social-btn:hover { background: var(--accent); border-color: var(--accent); color: #0f0e0c; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50px; padding: 14px 28px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: .9rem; font-weight: 500; z-index: 300;
+      transition: transform .3s ease; white-space: nowrap;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { color: var(--accent); font-size: 1.2rem; }
+
+    /* ── ORDER MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 400; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 40px; max-width: 440px; width: 90%;
+      text-align: center; transform: scale(.9);
+      transition: transform .3s;
+    }
+    .modal-overlay.open .modal { transform: scale(1); }
+    .modal-icon { font-size: 4rem; margin-bottom: 16px; }
+    .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 12px; }
+    .modal p { color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+    .modal .btn-primary { padding: 14px 40px; }
+
+    /* ── SCROLL TO TOP ── */
+    .scroll-top {
+      position: fixed; bottom: 30px; right: 30px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--accent); border: none; cursor: pointer;
+      color: #0f0e0c; font-size: 1.2rem; z-index: 90;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .3s, transform .3s;
+      box-shadow: 0 4px 16px rgba(244,160,53,0.4);
+    }
+    .scroll-top.show { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .hero-visual { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-stats { gap: 24px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 16px; }
+    }
+  </style>
 </head>
 <body>
 
-  <header>🍽️ FreshBite Food Delivery</header>
-
-  <nav>
-    <a href="#">Home</a>
-    <a href="#">Menu</a>
-    <a href="#">Offers</a>
-    <a href="#">Contact</a>
-  </nav>
-
-  <div class="container">
-    <h2>Our Popular Dishes</h2>
-
-    <div class="menu" id="menu">
-      <div class="item">
-        <img src="https://source.unsplash.com/400x300/?pizza" alt="Pizza">
-        <h3>Margherita Pizza</h3>
-        <p>₹299</p>
-        <button onclick="addToCart('Margherita Pizza', 299)">Add to Cart</button>
-      </div>
-
-      <div class="item">
-        <img src="https://source.unsplash.com/400x300/?burger" alt="Burger">
-        <h3>Cheese Burger</h3>
-        <p>₹199</p>
-        <button onclick="addToCart('Cheese Burger', 199)">Add to Cart</button>
-      </div>
-
-      <div class="item">
-        <img src="https://source.unsplash.com/400x300/?pasta" alt="Pasta">
-        <h3>Italian Pasta</h3>
-        <p>₹249</p>
-        <button onclick="addToCart('Italian Pasta', 249)">Add to Cart</button>
-      </div>
-
-      <div class="item">
-        <img src="https://source.unsplash.com/400x300/?biryani" alt="Biryani">
-        <h3>Chicken Biryani</h3>
-        <p>₹349</p>
-        <button onclick="addToCart('Chicken Biryani', 349)">Add to Cart</button>
-      </div>
-    </div>
-
-    <div class="cart">
-      <h2>Your Cart</h2>
-      <ul id="cart-list"></ul>
-      <div class="checkout">
-        <strong>Total: ₹<span id="total">0</span></strong>
-        <button onclick="checkout()">Checkout</button>
-      </div>
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo">Fresh<span>Bite</span></div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#offers">Offers</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" id="loginNavBtn" style="background:transparent;border:1px solid #2e2920;border-radius:50px;padding:9px 20px;color:#f0ebe3;font-size:.88rem;font-weight:600;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px;" onmouseover="this.style.borderColor='#f4a035';this.style.color='#f4a035'" onmouseout="this.style.borderColor='#2e2920';this.style.color='#f0ebe3'">👤 Sign In</a>
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <div class="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
     </div>
   </div>
+</nav>
 
-  <footer>
-    © 2025 FreshBite. All rights reserved.
-  </footer>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span> Fast Delivery in 30 mins</div>
+    <h1>Great Food,<br>Delivered <em>Fresh</em><br>To Your Door</h1>
+    <p>Explore hundreds of dishes from local restaurants. Order with ease, track in real time, and enjoy every bite.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Order Now →</button>
+      <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">500+</div><div class="stat-label">Menu Items</div></div>
+      <div><div class="stat-num">30<small>min</small></div><div class="stat-label">Avg Delivery</div></div>
+      <div><div class="stat-num">4.9★</div><div class="stat-label">App Rating</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="float-card">🍕<span>Pizza</span></div>
+    <div class="float-card">🍔<span>Burger</span></div>
+    <div class="float-card">🍜<span>Noodles</span></div>
+    <div class="float-card">🍱<span>Biryani</span></div>
+  </div>
+</section>
 
-  <script src="script.js"></script>
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="section-header">
+    <div class="section-label">Browse by Category</div>
+    <h2>What are you craving?</h2>
+  </div>
+  <div class="cat-grid" id="catGrid">
+    <div class="cat-pill active" onclick="filterCategory('all', this)"><span>🍽️</span> All</div>
+    <div class="cat-pill" onclick="filterCategory('pizza', this)"><span>🍕</span> Pizza</div>
+    <div class="cat-pill" onclick="filterCategory('burger', this)"><span>🍔</span> Burgers</div>
+    <div class="cat-pill" onclick="filterCategory('biryani', this)"><span>🍛</span> Biryani</div>
+    <div class="cat-pill" onclick="filterCategory('noodles', this)"><span>🍜</span> Noodles</div>
+    <div class="cat-pill" onclick="filterCategory('dessert', this)"><span>🍰</span> Desserts</div>
+    <div class="cat-pill" onclick="filterCategory('drinks', this)"><span>🥤</span> Drinks</div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu" id="menu">
+  <div class="section-header">
+    <div class="section-label">Our Menu</div>
+    <h2>Fresh, Fast & Delicious</h2>
+  </div>
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+<!-- OFFERS -->
+<section class="offers" id="offers">
+  <div class="section-header">
+    <div class="section-label">Special Deals</div>
+    <h2>Today's Best Offers</h2>
+  </div>
+  <div class="offers-grid">
+    <div class="offer-card orange">
+      <h3>20% Off Your First Order</h3>
+      <p>Use the code below at checkout and enjoy your first meal at a discount.</p>
+      <div class="offer-code">FRESH20</div>
+      <span class="offer-emoji">🎉</span>
+    </div>
+    <div class="offer-card dark">
+      <h3>Free Delivery Weekend</h3>
+      <p>Every Saturday and Sunday – no delivery charges on all orders above ₹299.</p>
+      <div class="offer-code">FREEDEL</div>
+      <span class="offer-emoji">🚀</span>
+    </div>
+    <div class="offer-card dark">
+      <h3>Combo Meals from ₹199</h3>
+      <p>Main dish + drink + side at an unbeatable bundled price. Limited time!</p>
+      <div class="offer-code">COMBO99</div>
+      <span class="offer-emoji">🍱</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-header">
+    <div class="section-label">Simple Process</div>
+    <h2>How FreshBite Works</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">📍</div>
+      <h4>Choose Location</h4>
+      <p>Enter your delivery address and we'll show you the best nearby restaurants.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">🍽️</div>
+      <h4>Browse & Order</h4>
+      <p>Pick your favourite dishes, customise them, and add to your cart in one click.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">💳</div>
+      <h4>Pay Securely</h4>
+      <p>Multiple payment options — UPI, card, wallets, or cash on delivery.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">🛵</div>
+      <h4>Track & Enjoy</h4>
+      <p>Follow your order in real time and get fresh food delivered to your doorstep.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="section-header">
+    <div class="section-label">Happy Customers</div>
+    <h2>What People Are Saying</h2>
+  </div>
+  <div class="review-grid">
+    <div class="review-card">
+      <div class="reviewer">
+        <div class="avatar">R</div>
+        <div class="reviewer-info"><strong>Riya Sharma</strong><small>Lucknow, UP</small></div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"Ordered a chicken biryani at 8pm, got it in 28 minutes. Absolutely delicious and still piping hot. FreshBite never disappoints!"</p>
+    </div>
+    <div class="review-card">
+      <div class="reviewer">
+        <div class="avatar">A</div>
+        <div class="reviewer-info"><strong>Aditya Kumar</strong><small>Kanpur, UP</small></div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"The app is super clean and easy to use. Loved the combo offers — got a full meal for under ₹200. Will definitely order again."</p>
+    </div>
+    <div class="review-card">
+      <div class="reviewer">
+        <div class="avatar">P</div>
+        <div class="reviewer-info"><strong>Priya Nair</strong><small>Varanasi, UP</small></div>
+      </div>
+      <div class="stars">★★★★☆</div>
+      <p class="review-text">"Great variety of food options. The pizza was crispy and fresh. Minor delay once but customer support resolved it immediately."</p>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="section-label">Stay Updated</div>
+  <h2>Get Exclusive Deals & Offers</h2>
+  <p>Subscribe to our newsletter and never miss a discount again.</p>
+  <div class="email-form">
+    <input class="email-input" type="email" placeholder="Enter your email address" id="emailInput" />
+    <button class="btn-primary" onclick="subscribeEmail()">Subscribe</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Fresh<span>Bite</span></div>
+      <p>Delivering fresh, hot meals from your favourite restaurants straight to your door — fast, affordable, and delicious.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 FreshBite. All rights reserved. Made with ❤️ by Harsh Kumar Pandey</span>
+    <div class="social-links">
+      <a class="social-btn" href="#">📘</a>
+      <a class="social-btn" href="#">📸</a>
+      <a class="social-btn" href="#">🐦</a>
+    </div>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 Your Cart</h3>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="empty-cart" id="emptyCart">
+      <div class="empty-icon">🍽️</div>
+      <p>Your cart is empty</p>
+      <small style="color:var(--muted)">Add some delicious items!</small>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total Amount</span>
+      <strong id="cartTotal">₹0</strong>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">Place Order →</button>
+  </div>
+</div>
+
+<!-- ORDER SUCCESS MODAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h3>Order Placed!</h3>
+    <p>Your delicious food is being prepared and will arrive in approximately <strong>30 minutes</strong>. Sit back and relax!</p>
+    <button class="btn-primary" onclick="closeModal()">Back to Menu</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Item added to cart!</span>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  const menuItems = [
+    { id:1, name:"Margherita Pizza", desc:"Classic tomato base, fresh mozzarella and basil leaves.", price:249, emoji:"🍕", tag:"Popular", tagClass:"", rating:"4.8", cat:"pizza" },
+    { id:2, name:"Smoky BBQ Burger", desc:"Juicy beef patty with smoked BBQ sauce and crispy lettuce.", price:199, emoji:"🍔", tag:"Bestseller", tagClass:"", rating:"4.9", cat:"burger" },
+    { id:3, name:"Chicken Biryani", desc:"Aromatic long-grain rice cooked with tender chicken and spices.", price:329, emoji:"🍛", tag:"Spicy", tagClass:"spicy", rating:"4.7", cat:"biryani" },
+    { id:4, name:"Veg Hakka Noodles", desc:"Stir-fried noodles with crunchy vegetables and soy sauce.", price:179, emoji:"🍜", tag:"Veg", tagClass:"veg", rating:"4.6", cat:"noodles" },
+    { id:5, name:"Chocolate Lava Cake", desc:"Warm chocolate cake with a gooey molten center. Served with ice cream.", price:149, emoji:"🍰", tag:"Sweet", tagClass:"veg", rating:"4.9", cat:"dessert" },
+    { id:6, name:"Mango Lassi", desc:"Chilled blended mango with creamy yoghurt and a hint of cardamom.", price:89, emoji:"🥭", tag:"Veg", tagClass:"veg", rating:"4.8", cat:"drinks" },
+    { id:7, name:"Paneer Tikka Masala", desc:"Cottage cheese cubes in rich, spiced tomato and cream gravy.", price:279, emoji:"🧆", tag:"Veg", tagClass:"veg", rating:"4.7", cat:"biryani" },
+    { id:8, name:"Crispy Fried Chicken", desc:"Golden-fried chicken tenders with house special dipping sauce.", price:229, emoji:"🍗", tag:"Spicy", tagClass:"spicy", rating:"4.8", cat:"burger" },
+  ];
+
+  let cart = {};
+
+  function renderMenu(items) {
+    const grid = document.getElementById('menuGrid');
+    grid.innerHTML = items.map(item => `
+      <div class="food-card" data-cat="${item.cat}">
+        <div class="food-img">
+          <span>${item.emoji}</span>
+          <span class="food-tag ${item.tagClass}">${item.tag}</span>
+        </div>
+        <div class="food-body">
+          <div class="food-rating"><span class="stars">★</span>${item.rating} • 25–35 min</div>
+          <div class="food-name">${item.name}</div>
+          <div class="food-desc">${item.desc}</div>
+          <div class="food-footer">
+            <div class="food-price">₹${item.price} <small>onwards</small></div>
+            <button class="add-btn" onclick="addToCart(${item.id})">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterCategory(cat, el) {
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    const filtered = cat === 'all' ? menuItems : menuItems.filter(i => i.cat === cat);
+    renderMenu(filtered);
+  }
+
+  function addToCart(id) {
+    const item = menuItems.find(i => i.id === id);
+    if (cart[id]) cart[id].qty++;
+    else cart[id] = { ...item, qty: 1 };
+    updateCartUI();
+    showToast(`${item.emoji} ${item.name} added!`);
+    // bump animation
+    const cc = document.getElementById('cartCount');
+    cc.classList.add('bump');
+    setTimeout(() => cc.classList.remove('bump'), 300);
+  }
+
+  function changeQty(id, delta) {
+    if (!cart[id]) return;
+    cart[id].qty += delta;
+    if (cart[id].qty <= 0) delete cart[id];
+    updateCartUI();
+  }
+
+  function updateCartUI() {
+    const keys = Object.keys(cart);
+    const total = keys.reduce((s, k) => s + cart[k].price * cart[k].qty, 0);
+    const count = keys.reduce((s, k) => s + cart[k].qty, 0);
+    document.getElementById('cartCount').textContent = count;
+    document.getElementById('cartTotal').textContent = `₹${total}`;
+    const container = document.getElementById('cartItems');
+    const empty = document.getElementById('emptyCart');
+    if (keys.length === 0) {
+      container.innerHTML = `<div class="empty-cart" id="emptyCart"><div class="empty-icon">🍽️</div><p>Your cart is empty</p><small style="color:var(--muted)">Add some delicious items!</small></div>`;
+    } else {
+      container.innerHTML = keys.map(k => {
+        const i = cart[k];
+        return `<div class="cart-item">
+          <div class="cart-item-emoji">${i.emoji}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${i.name}</div>
+            <div class="cart-item-price">₹${i.price * i.qty}</div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(${k}, -1)">−</button>
+            <span class="qty">${i.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${k}, +1)">+</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  function toggleCart() {
+    const s = document.getElementById('cartSidebar');
+    const o = document.getElementById('overlay');
+    s.classList.toggle('open');
+    o.classList.toggle('open');
+  }
+
+  function checkout() {
+    if (Object.keys(cart).length === 0) { showToast('Your cart is empty!'); return; }
+    toggleCart();
+    document.getElementById('orderModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    cart = {};
+    updateCartUI();
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function subscribeEmail() {
+    const v = document.getElementById('emailInput').value;
+    if (!v || !v.includes('@')) { showToast('Please enter a valid email!'); return; }
+    showToast('🎉 Subscribed! Welcome to FreshBite.');
+    document.getElementById('emailInput').value = '';
+  }
+
+  function toggleMobileMenu() {}
+
+  window.addEventListener('scroll', () => {
+    const st = document.getElementById('scrollTop');
+    if (window.scrollY > 400) st.classList.add('show');
+    else st.classList.remove('show');
+  });
+
+  // Init
+  renderMenu(menuItems);
+
+  // Check login state
+  (function() {
+    const session = sessionStorage.getItem('fb_logged_in');
+    const name = sessionStorage.getItem('fb_user_name');
+    const btn = document.getElementById('loginNavBtn');
+    if (session === '1' && btn) {
+      btn.textContent = '👤 ' + (name || 'Account');
+      btn.href = '#';
+      btn.onclick = function(e) {
+        e.preventDefault();
+        if(confirm('Sign out of FreshBite?')) {
+          sessionStorage.clear();
+          window.location.reload();
+        }
+      };
+    }
+  })();
+</script>
 </body>
 </html>

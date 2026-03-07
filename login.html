@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshBite – Sign In / Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0e0c;
+      --surface: #1a1814;
+      --card: #231f1a;
+      --accent: #f4a035;
+      --accent2: #e8572a;
+      --text: #f0ebe3;
+      --muted: #8a8070;
+      --border: #2e2920;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      width: 50%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 60px;
+      min-height: 100vh;
+    }
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(244,160,53,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(232,87,42,0.15) 0%, transparent 60%);
+      z-index: 0;
+    }
+    .food-floats { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .food-float {
+      position: absolute;
+      animation: floatAround 8s ease-in-out infinite;
+      filter: drop-shadow(0 8px 24px rgba(244,160,53,0.3));
+    }
+    .food-float:nth-child(1) { top: 8%;  left: 15%; font-size: 3.5rem; animation-delay: 0s;    animation-duration: 7s; }
+    .food-float:nth-child(2) { top: 20%; right:12%; font-size: 2.8rem; animation-delay: 1.2s;  animation-duration: 9s; }
+    .food-float:nth-child(3) { top: 42%; left:  8%; font-size: 2.4rem; animation-delay: 2.4s;  animation-duration: 6s; }
+    .food-float:nth-child(4) { top: 35%; right:20%; font-size: 3.8rem; animation-delay: 0.6s;  animation-duration: 8.5s;}
+    .food-float:nth-child(5) { top: 60%; left: 25%; font-size: 2.6rem; animation-delay: 1.8s;  animation-duration: 7.5s;}
+    .food-float:nth-child(6) { top: 15%; left: 45%; font-size: 2rem;   animation-delay: 3s;    animation-duration: 10s; }
+    .food-float:nth-child(7) { top: 70%; right:10%; font-size: 2.2rem; animation-delay: 0.3s;  animation-duration: 8s; }
+    @keyframes floatAround {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      25%      { transform: translateY(-18px) rotate(5deg); }
+      50%      { transform: translateY(-8px) rotate(-3deg); }
+      75%      { transform: translateY(-22px) rotate(4deg); }
+    }
+    .orb {
+      position: absolute; width: 350px; height: 350px; border-radius: 50%;
+      top: 18%; left: 50%; transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(244,160,53,0.22) 0%, rgba(232,87,42,0.1) 45%, transparent 70%);
+      filter: blur(30px);
+      animation: orbPulse 4s ease-in-out infinite; z-index: 1;
+    }
+    @keyframes orbPulse {
+      0%,100% { transform: translateX(-50%) scale(1);    opacity: 0.8; }
+      50%      { transform: translateX(-50%) scale(1.15); opacity: 1;   }
+    }
+    .hero-dish {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -55%); z-index: 2; text-align: center;
+    }
+    .dish-emoji {
+      font-size: 9rem; display: block;
+      animation: dishFloat 5s ease-in-out infinite;
+      filter: drop-shadow(0 20px 40px rgba(244,160,53,0.4));
+    }
+    @keyframes dishFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-14px) scale(1.03); }
+    }
+    .dish-ring, .dish-ring-2 {
+      border-radius: 50%; border: 1.5px solid rgba(244,160,53,0.2);
+      position: absolute; top: 50%; left: 50%;
+      animation: ringPulse 3s ease-in-out infinite;
+    }
+    .dish-ring   { width: 220px; height: 220px; transform: translate(-50%,-50%); }
+    .dish-ring-2 { width: 300px; height: 300px; transform: translate(-50%,-50%); animation-delay: 1.5s; border-color: rgba(244,160,53,0.08); }
+    @keyframes ringPulse {
+      0%,100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+      50%      { opacity: 1;   transform: translate(-50%,-50%) scale(1.05); }
+    }
+    .left-content { position: relative; z-index: 3; }
+    .left-content .tagline {
+      font-size: .78rem; text-transform: uppercase; letter-spacing: 3px;
+      color: var(--accent); font-weight: 600; margin-bottom: 14px;
+    }
+    .left-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; line-height: 1.1; margin-bottom: 14px;
+    }
+    .left-content h2 em { font-style: italic; color: var(--accent); }
+    .left-content p { color: var(--muted); font-size: .92rem; line-height: 1.7; max-width: 340px; }
+    .feature-pills { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+    .pill {
+      background: rgba(244,160,53,0.1); border: 1px solid rgba(244,160,53,0.25);
+      border-radius: 50px; padding: 7px 14px;
+      font-size: .78rem; color: var(--accent); font-weight: 500;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      width: 50%; display: flex; align-items: center; justify-content: center;
+      padding: 40px; border-left: 1px solid var(--border);
+      background: var(--surface); position: relative; overflow: hidden;
+    }
+    .right-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(244,160,53,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .form-wrapper { width: 100%; max-width: 400px; position: relative; z-index: 1; }
+
+    .logo {
+      font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 900;
+      color: var(--accent); letter-spacing: -1px; margin-bottom: 28px;
+      display: block; text-decoration: none;
+    }
+    .logo span { color: var(--accent2); }
+
+    /* Tab switcher */
+    .tab-switcher {
+      display: flex; background: var(--card); border-radius: 12px;
+      padding: 4px; margin-bottom: 28px; border: 1px solid var(--border);
+    }
+    .tab-btn {
+      flex: 1; padding: 10px; border: none; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
+      cursor: pointer; transition: all .25s; background: transparent; color: var(--muted);
+    }
+    .tab-btn.active { background: var(--accent); color: #0f0e0c; }
+
+    .form-title {
+      font-family: 'Playfair Display', serif; font-size: 1.7rem;
+      font-weight: 700; margin-bottom: 6px;
+    }
+    .form-subtitle { color: var(--muted); font-size: .88rem; margin-bottom: 24px; line-height: 1.6; }
+
+    /* Social */
+    .social-login { display: flex; gap: 12px; margin-bottom: 22px; }
+    .social-btn {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 11px; color: var(--text);
+      font-size: .85rem; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all .2s; font-family: 'DM Sans', sans-serif;
+    }
+    .social-btn:hover { background: #2a241e; border-color: rgba(244,160,53,0.3); transform: translateY(-1px); }
+    .social-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background: var(--border); }
+    .divider span { color: var(--muted); font-size: .78rem; }
+
+    /* Fields */
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: .83rem; font-weight: 500; margin-bottom: 7px; }
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      font-size: .95rem; pointer-events: none; opacity: 0.45;
+    }
+    .field input {
+      width: 100%; background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 13px 14px 13px 42px;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: .92rem; outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .field input::placeholder { color: var(--muted); }
+    .field input:focus {
+      border-color: var(--accent); background: #2a2318;
+      box-shadow: 0 0 0 3px rgba(244,160,53,0.12);
+    }
+    .pass-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 1rem; padding: 4px; transition: color .2s;
+    }
+    .pass-toggle:hover { color: var(--accent); }
+
+    .error-msg { color: #ff6b6b; font-size: .78rem; margin-top: 5px; display: none; }
+    .field.error input { border-color: #ff6b6b; box-shadow: 0 0 0 3px rgba(255,107,107,0.1); }
+    .field.error .error-msg { display: block; }
+    .success-msg { color: #4caf50; font-size: .78rem; margin-top: 5px; display: none; }
+    .field.success input { border-color: #4caf50; }
+    .field.success .success-msg { display: block; }
+
+    .form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .remember { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .remember input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+    .remember span { font-size: .83rem; color: var(--muted); }
+    .forgot-link { font-size: .83rem; color: var(--accent); text-decoration: none; font-weight: 500; }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%; background: var(--accent); color: #0f0e0c;
+      border: none; border-radius: 10px; padding: 15px;
+      font-family: 'DM Sans', sans-serif; font-size: .97rem; font-weight: 700;
+      cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s;
+      box-shadow: 0 8px 24px rgba(244,160,53,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      position: relative; overflow: hidden; margin-bottom: 20px;
+    }
+    .submit-btn::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left .5s;
+    }
+    .submit-btn:hover::before { left: 100%; }
+    .submit-btn:hover { background: #ffb347; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(244,160,53,0.5); }
+    .submit-btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+    .switch-link { text-align: center; font-size: .85rem; color: var(--muted); }
+    .switch-link a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
+    .switch-link a:hover { text-decoration: underline; }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      padding: 13px 24px; border-radius: 50px; font-size: .88rem; font-weight: 500;
+      z-index: 9999; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: transform .4s cubic-bezier(.175,.885,.32,1.275), opacity .3s;
+      opacity: 0; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.success { background: #1a2e1a; border: 1px solid #4caf50; color: #81c784; }
+    #toast.error   { background: #2e1a1a; border: 1px solid #e57373; color: #ef9a9a; }
+    #toast.info    { background: var(--card); border: 1px solid rgba(244,160,53,0.4); color: var(--text); }
+
+    /* Hidden panels */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      body { flex-direction: column; }
+      .left-panel { width: 100%; min-height: 280px; padding: 36px 24px 36px; }
+      .right-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); padding: 36px 20px; }
+      .dish-emoji { font-size: 6rem; }
+      .food-float { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="orb"></div>
+  <div class="food-floats">
+    <span class="food-float">🍕</span>
+    <span class="food-float">🍔</span>
+    <span class="food-float">🍜</span>
+    <span class="food-float">🍛</span>
+    <span class="food-float">🍰</span>
+    <span class="food-float">🥭</span>
+    <span class="food-float">🍗</span>
+  </div>
+  <div class="hero-dish">
+    <div class="dish-ring"></div>
+    <div class="dish-ring-2"></div>
+    <span class="dish-emoji">🍽️</span>
+  </div>
+  <div class="left-content">
+    <p class="tagline">🔥 Hot & Fresh • Always</p>
+    <h2>Cravings don't<br>wait. <em>Neither do we.</em></h2>
+    <p>Get your favorite meals delivered in 30 minutes or less. Join thousands of happy customers.</p>
+    <div class="feature-pills">
+      <div class="pill">⚡ 30-min delivery</div>
+      <div class="pill">🎁 Member rewards</div>
+      <div class="pill">📍 Live tracking</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="form-wrapper">
+
+    <a href="index.html" class="logo">Fresh<span>Bite</span></a>
+
+    <!-- Tab Switcher -->
+    <div class="tab-switcher">
+      <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn" id="signupTab" onclick="switchTab('signup')">Create Account</button>
+    </div>
+
+    <!-- ── LOGIN FORM ── -->
+    <div class="form-panel active" id="loginPanel">
+      <h1 class="form-title">Welcome back 👋</h1>
+      <p class="form-subtitle">Sign in and let's get you fed.</p>
+
+      <div class="social-login">
+        <button class="social-btn" onclick="socialLogin(this,'Google')">
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="socialLogin(this,'Facebook')">
+          <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+      </div>
+      <div class="divider"><span>or continue with email</span></div>
+
+      <div class="field" id="l-emailField">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉️</span>
+          <input type="email" id="l-email" placeholder="you@example.com" />
+        </div>
+        <span class="error-msg">Please enter a valid email.</span>
+      </div>
+
+      <div class="field" id="l-passField">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="l-pass" placeholder="Enter your password" />
+          <button class="pass-toggle" type="button" onclick="togglePass('l-pass',this)">👁</button>
+        </div>
+        <span class="error-msg">Please enter your password.</span>
+      </div>
+
+      <div class="form-row">
+        <label class="remember">
+          <input type="checkbox" id="rememberMe" />
+          <span>Remember me</span>
+        </label>
+        <a href="#" class="forgot-link" onclick="forgotPassword()">Forgot password?</a>
+      </div>
+
+      <button class="submit-btn" id="loginBtn" onclick="handleLogin()">
+        Sign In to FreshBite &nbsp;→
+      </button>
+
+      <p class="switch-link">New here? <a onclick="switchTab('signup')">Create a free account</a></p>
+    </div>
+
+    <!-- ── SIGNUP FORM ── -->
+    <div class="form-panel" id="signupPanel">
+      <h1 class="form-title">Join FreshBite 🍕</h1>
+      <p class="form-subtitle">Create your account and start ordering.</p>
+
+      <div class="social-login">
+        <button class="social-btn" onclick="socialLogin(this,'Google')">
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="socialLogin(this,'Facebook')">
+          <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+      </div>
+      <div class="divider"><span>or sign up with email</span></div>
+
+      <div class="field" id="s-nameField">
+        <label>Full Name</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="s-name" placeholder="Harsh Kumar Pandey" />
+        </div>
+        <span class="error-msg">Please enter your name.</span>
+      </div>
+
+      <div class="field" id="s-emailField">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉️</span>
+          <input type="email" id="s-email" placeholder="you@example.com" />
+        </div>
+        <span class="error-msg">Please enter a valid email.</span>
+      </div>
+
+      <div class="field" id="s-passField">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="s-pass" placeholder="Min. 6 characters" />
+          <button class="pass-toggle" type="button" onclick="togglePass('s-pass',this)">👁</button>
+        </div>
+        <span class="error-msg">Password must be at least 6 characters.</span>
+      </div>
+
+      <div class="field" id="s-confirmField">
+        <label>Confirm Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="s-confirm" placeholder="Re-enter your password" />
+          <button class="pass-toggle" type="button" onclick="togglePass('s-confirm',this)">👁</button>
+        </div>
+        <span class="error-msg">Passwords do not match.</span>
+      </div>
+
+      <button class="submit-btn" id="signupBtn" onclick="handleSignup()" style="margin-top:6px;">
+        Create My Account &nbsp;→
+      </button>
+
+      <p class="switch-link">Already have an account? <a onclick="switchTab('login')">Sign in</a></p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+  // Stored users (demo - in memory)
+  let users = JSON.parse(localStorage.getItem('fb_users') || '[]');
+
+  function switchTab(tab) {
+    document.getElementById('loginPanel').classList.toggle('active', tab === 'login');
+    document.getElementById('signupPanel').classList.toggle('active', tab === 'signup');
+    document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+    document.getElementById('signupTab').classList.toggle('active', tab === 'signup');
+    clearErrors();
+  }
+
+  function clearErrors() {
+    document.querySelectorAll('.field').forEach(f => f.classList.remove('error','success'));
+  }
+
+  function togglePass(id, btn) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  }
+
+  function showToast(msg, type='info') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show ' + type;
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+  }
+
+  function setLoading(btn, loading, label) {
+    btn.disabled = loading;
+    btn.textContent = loading ? 'Please wait...' : label;
+  }
+
+  function fieldError(id, show) {
+    const f = document.getElementById(id);
+    f.classList.toggle('error', show);
+    f.classList.toggle('success', !show);
+  }
+
+  // ── SIGN UP ──
+  function handleSignup() {
+    const name    = document.getElementById('s-name').value.trim();
+    const email   = document.getElementById('s-email').value.trim();
+    const pass    = document.getElementById('s-pass').value;
+    const confirm = document.getElementById('s-confirm').value;
+
+    let ok = true;
+
+    if (!name)                                { fieldError('s-nameField', true);    ok = false; } else fieldError('s-nameField', false);
+    if (!email || !email.includes('@'))       { fieldError('s-emailField', true);   ok = false; } else fieldError('s-emailField', false);
+    if (!pass || pass.length < 6)             { fieldError('s-passField', true);    ok = false; } else fieldError('s-passField', false);
+    if (!confirm || confirm !== pass)         { fieldError('s-confirmField', true); ok = false; } else fieldError('s-confirmField', false);
+    if (!ok) return;
+
+    // Check if email already exists
+    if (users.find(u => u.email === email)) {
+      fieldError('s-emailField', true);
+      document.querySelector('#s-emailField .error-msg').textContent = 'This email is already registered. Please sign in.';
+      return;
+    }
+
+    const btn = document.getElementById('signupBtn');
+    setLoading(btn, true, 'Create My Account →');
+
+    setTimeout(() => {
+      users.push({ name, email, pass });
+      localStorage.setItem('fb_users', JSON.stringify(users));
+      setLoading(btn, false, 'Create My Account →');
+      showToast('🎉 Account created! Please sign in.', 'success');
+      clearErrors();
+      // Pre-fill login email and switch
+      document.getElementById('l-email').value = email;
+      switchTab('login');
+    }, 1000);
+  }
+
+  // ── LOGIN ──
+  function handleLogin() {
+    const email = document.getElementById('l-email').value.trim();
+    const pass  = document.getElementById('l-pass').value;
+
+    let ok = true;
+    if (!email) { fieldError('l-emailField', true); ok = false; } else fieldError('l-emailField', false);
+    if (!pass)  { fieldError('l-passField', true);  ok = false; } else fieldError('l-passField', false);
+    if (!ok) return;
+
+    const btn = document.getElementById('loginBtn');
+    setLoading(btn, true, 'Sign In to FreshBite →');
+
+    setTimeout(() => {
+      const user = users.find(u => u.email === email && u.pass === pass);
+
+      if (!user && users.length > 0) {
+        // Wrong credentials
+        setLoading(btn, false, 'Sign In to FreshBite →');
+        fieldError('l-emailField', true);
+        fieldError('l-passField', true);
+        document.querySelector('#l-emailField .error-msg').textContent = 'Incorrect email or password.';
+        document.querySelector('#l-passField .error-msg').textContent = 'Incorrect email or password.';
+        showToast('❌ Wrong email or password. Try again.', 'error');
+        return;
+      }
+
+      // Success — redirect to main site
+      const firstName = user ? user.name.split(' ')[0] : 'Friend';
+      showToast('✅ Welcome back, ' + firstName + '! Taking you in...', 'success');
+      setLoading(btn, false, 'Sign In to FreshBite →');
+      sessionStorage.setItem('fb_logged_in', '1');
+      sessionStorage.setItem('fb_user_name', firstName);
+
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1500);
+    }, 1000);
+  }
+
+  function forgotPassword() {
+    const email = document.getElementById('l-email').value.trim();
+    if (!email) {
+      showToast('Enter your email first, then click Forgot password.', 'info');
+      document.getElementById('l-email').focus();
+      return;
+    }
+    showToast('📧 Password reset link sent to ' + email, 'success');
+  }
+
+  function socialLogin(btn, provider) {
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'Connecting...';
+    setTimeout(() => {
+      btn.innerHTML = orig;
+      btn.disabled = false;
+      showToast('✅ Signed in with ' + provider + '! Redirecting...', 'success');
+      sessionStorage.setItem('fb_logged_in', '1');
+      sessionStorage.setItem('fb_user_name', provider + ' User');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1400);
+    }, 1200);
+  }
+
+  // Enter key
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('loginPanel').classList.contains('active')) handleLogin();
+    else handleSignup();
+  });
+</script>
+</body>
+</html>
