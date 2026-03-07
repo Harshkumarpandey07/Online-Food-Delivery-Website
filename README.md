@@ -1,4 +1,6 @@
 🍽 FreshBite – Simple Online Food Delivery Website
+https://freshbite-ruddy.vercel.app/
+
 
 FreshBite is a clean and user-friendly online food delivery website built using HTML, CSS, and minimal JavaScript.
 It provides a smooth browsing experience where users can explore food items, add them to the cart, and proceed to checkout — all in a simple and responsive layout.
